@@ -6,37 +6,42 @@
 import socket
 import threading
 
+# Dictionary to store user names and their corresponding sockets
+users = {}
+
 # List to store message history
 message_history = []
 
 # Function to handle client connections
 def handle_client(client_socket, client_address):
     print(f"Connected to {client_address}")
-
+    
+    # Prompt user for username
+    client_socket.sendall(b"Enter your username: ")
+    username = client_socket.recv(1024).decode().strip()
+    
+    # Add user to dictionary
+    users[client_socket] = username
+    
     try:
         while True:
             # Receive message from client
             message = client_socket.recv(1024).decode().strip()
             if not message:
                 continue  # Skip empty messages
-
-            # Log message
-            print(f"{client_address[0]} ({message.split(':')[0]}): {message.split(':')[1]}")
-
+            
             # Add message to message history
-            message_history.append(message)
+            message_history.append((username, message))
             
             # Broadcast message to all clients
-            for user_socket in message_history:
-                try:
-                    if user_socket != client_socket:
-                        user_socket.sendall(message.encode())
-                except Exception as e:
-                    print(f"Error broadcasting message to client {user_socket}: {e}")
+            for user_socket in users:
+                if user_socket != client_socket:
+                    user_socket.sendall(f"{username}: {message}\n".encode())
     except Exception as e:
         print(f"Error handling client {client_address}: {e}")
     
-    # Close socket
+    # Remove user from dictionary and close socket
+    del users[client_socket]
     client_socket.close()
     print(f"Disconnected from {client_address}")
 
@@ -64,6 +69,7 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
 
 
