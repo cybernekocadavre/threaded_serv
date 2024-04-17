@@ -48,7 +48,7 @@ def main():
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server_socket.bind((server_host, server_port))
     server_socket.listen(5)
-    print(f"Server прослушивает на {server_host}:{server_port}")
+    print(f"Сервер прослушивает на {server_host}:{server_port}")
 
     client_handler_thread = threading.Thread(target=handle_client_connections, args=(server_socket,))
     client_handler_thread.start()
