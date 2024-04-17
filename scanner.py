@@ -1,14 +1,16 @@
+#!/usr/bin/env python
+# coding: utf-8
+
+# In[ ]:
+
 import socket
 
 def port_scanner(host):
     print(f"Scanning ports on {host}...")
     for port in range(1, 65536):
         try:
-            # Create a socket object
             with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-                # Set a timeout for connection attempts
                 s.settimeout(0.1)
-                # Attempt to connect to the host and port
                 result = s.connect_ex((host, port))
                 if result == 0:
                     print(f"Port {port} is open")
@@ -23,4 +25,3 @@ def port_scanner(host):
 if __name__ == "__main__":
     host = input("Enter the hostname or IP address to scan: ")
     port_scanner(host)
-
