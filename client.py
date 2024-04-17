@@ -34,6 +34,9 @@ def chat_client():
             # Receive and print any messages from the server
             data = client_socket.recv(1024)
             print("Received:", data.decode(), end='')  # Print received message without newline
+            
+            # Prompt user for a new message
+            print("Enter your message: ", end='', flush=True)  # Flush the buffer to ensure prompt is shown immediately
     except KeyboardInterrupt:
         print("Exiting...")
     finally:
@@ -42,3 +45,4 @@ def chat_client():
 
 if __name__ == "__main__":
     chat_client()
+
