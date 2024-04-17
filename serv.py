@@ -5,7 +5,6 @@
 
 import socket
 import threading
-import sys
 
 def echo_server(client_socket, client_address):
     print(f"Connected to {client_address}")
@@ -33,8 +32,7 @@ def main():
     server_socket.listen(5)
     print(f"Server listening on {server_host}:{server_port}")
 
-    client_handler_thread = threading.Thread(target=handle_client_connections, args=(server_socket,))
-    client_handler_thread.start()
+    handle_client_connections(server_socket)
 
 if __name__ == "__main__":
     main()
