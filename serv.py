@@ -9,9 +9,6 @@ import threading
 # Dictionary to store user names and their corresponding sockets
 users = {}
 
-# List to store message history
-message_history = []
-
 # Function to handle client connections
 def handle_client(client_socket, client_address):
     print(f"Connected to {client_address}")
@@ -25,21 +22,18 @@ def handle_client(client_socket, client_address):
     
     try:
         while True:
+            # Prompt user for message
+            client_socket.sendall(b"Enter your message: ")
+            
             # Receive message from client
             message = client_socket.recv(1024).decode().strip()
             if not message:
                 continue  # Skip empty messages
             
-            # Add message to message history
-            message_history.append((username, message))
-            
             # Broadcast message to all clients
             for user_socket in users:
                 if user_socket != client_socket:
                     user_socket.sendall(f"{username}: {message}\n".encode())
-            
-            # Prompt user for a new message
-            client_socket.sendall(b"Enter your message: ")
     except Exception as e:
         print(f"Error handling client {client_address}: {e}")
     
@@ -72,7 +66,6 @@ def main():
 
 if __name__ == "__main__":
     main()
-
 
 
 
