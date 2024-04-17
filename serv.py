@@ -3,9 +3,9 @@
 
 # In[ ]:
 
-
 import socket
 import threading
+import sys
 
 def echo_server(client_socket, client_address):
     print(f"Connected to {client_address}")
@@ -13,12 +13,12 @@ def echo_server(client_socket, client_address):
         data = client_socket.recv(1024)
         if not data:
             break
+        print(f"Received from {client_address}: {data.decode()}")
         client_socket.sendall(data)
     print(f"Disconnected from {client_address}")
     client_socket.close()
 
 def handle_client_connections(server_socket):
-    
     while True:
         client_socket, client_address = server_socket.accept()
         client_thread = threading.Thread(target=echo_server, args=(client_socket, client_address))
@@ -31,10 +31,9 @@ def main():
     server_socket.bind((server_host, server_port))
     server_socket.listen(5)
     print(f"Server listening on {server_host}:{server_port}")
-
+    
     client_handler_thread = threading.Thread(target=handle_client_connections, args=(server_socket,))
     client_handler_thread.start()
 
 if __name__ == "__main__":
     main()
-
