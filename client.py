@@ -40,11 +40,11 @@ def chat_client():
     
             # Prompt user for a new message
             print("Enter your message: ", end='', flush=True)  # Flush the buffer to ensure prompt is shown immediately
-except KeyboardInterrupt:
-    print("Exiting...")
-finally:
-    # Close the connection
-    client_socket.close()
+    except KeyboardInterrupt:
+        print("Exiting...")
+    finally:
+        # Close the connection
+        client_socket.close()
 
 
 if __name__ == "__main__":
