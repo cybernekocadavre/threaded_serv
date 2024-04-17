@@ -5,11 +5,11 @@
 
 
 import socket
+import sys
 
-def echo_client():
+def echo_client(message):
     server_host = '127.0.0.1'
     server_port = 12345
-    message = "Enter message"
 
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
@@ -23,5 +23,11 @@ def echo_client():
     client_socket.close()
 
 if __name__ == "__main__":
-    echo_client()
+    if len(sys.argv) != 2:
+        print("Usage: python client.py <message>")
+        sys.exit(1)
+
+    message = sys.argv[1]
+    echo_client(message)
+
 
