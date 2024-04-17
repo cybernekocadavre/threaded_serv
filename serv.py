@@ -37,6 +37,9 @@ def handle_client(client_socket, client_address):
             for user_socket in users:
                 if user_socket != client_socket:
                     user_socket.sendall(f"{username}: {message}\n".encode())
+            
+            # Prompt user for a new message
+            client_socket.sendall(b"Enter your message: ")
     except Exception as e:
         print(f"Error handling client {client_address}: {e}")
     
