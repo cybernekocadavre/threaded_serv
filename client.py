@@ -5,6 +5,14 @@
 
 
 import socket
+import threading
+
+def receive_messages(client_socket):
+    while True:
+        data = client_socket.recv(1024)
+        if not data:
+            break
+        print(data.decode(), end='')
 
 def chat_client():
     server_host = '127.0.0.1'
@@ -22,6 +30,10 @@ def chat_client():
         # Send username to the server
         client_socket.sendall(username.encode())
 
+        # Start a thread to continuously receive messages from the server
+        receive_thread = threading.Thread(target=receive_messages, args=(client_socket,))
+        receive_thread.start()
+
         while True:
             # Prompt user for message
             message = input("Enter your message: ")
@@ -30,10 +42,6 @@ def chat_client():
 
             # Send message to the server
             client_socket.sendall(message.encode())
-            
-            # Receive and print messages from the server
-            data = client_socket.recv(1024)
-            print("Received:", data.decode(), end='')  # Print received message without newline
     except KeyboardInterrupt:
         print("Exiting...")
     finally:
@@ -42,4 +50,5 @@ def chat_client():
 
 if __name__ == "__main__":
     chat_client()
+
 
