@@ -5,13 +5,11 @@
 
 
 import socket
-import sys
 
 def chat_client():
     server_host = '127.0.0.1'
     server_port = 12345
 
-    # Connect to the server
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     client_socket.connect((server_host, server_port))
 
@@ -35,7 +33,7 @@ def chat_client():
 
             # Receive and print any messages from the server
             data = client_socket.recv(1024)
-            print("Received:", data.decode())
+            print("Received:", data.decode(), end='')  # Print received message without newline
     except KeyboardInterrupt:
         print("Exiting...")
     finally:
@@ -44,6 +42,3 @@ def chat_client():
 
 if __name__ == "__main__":
     chat_client()
-
-
-
