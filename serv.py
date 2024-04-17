@@ -3,24 +3,39 @@
 
 # In[ ]:
 
+# serv.py
+
 import socket
 import threading
 import sys
 
+# Dictionary to store connected clients and their usernames
+clients = {}
+
+# List to store message history
+message_history = []
+
 # Echo server function
-def echo_server(client_socket, client_address):
-    print(f"Connected to {client_address}")
+def echo_server(client_socket, client_address, username):
+    print(f"Connected to {client_address} as {username}")
     while True:
         # Receive data from the client
         data = client_socket.recv(1024)
         if not data:
             break
-        # Print the received message
-        print(f"Received from {client_address}: {data.decode()}")
-        # Echo the received data back to the client
-        client_socket.sendall(data)
-    print(f"Disconnected from {client_address}")
+        message = f"{username}: {data.decode()}"
+        print(f"Received from {client_address}: {message}")
+        
+        # Add message to history
+        message_history.append(message)
+        
+        # Send the message to all clients
+        for client in clients.values():
+            client.sendall(message.encode())
+            
+    print(f"Disconnected from {client_address} as {username}")
     client_socket.close()
+    del clients[username]
 
 # Function to handle incoming client connections
 def handle_client_connections(server_socket):
@@ -28,8 +43,16 @@ def handle_client_connections(server_socket):
         # Accept a client connection
         client_socket, client_address = server_socket.accept()
         print(f"New connection from {client_address}")
+        
+        # Prompt for username and receive from client
+        client_socket.sendall("Enter your username: ".encode())
+        username = client_socket.recv(1024).strip().decode()
+        
+        # Add client to dictionary
+        clients[username] = client_socket
+        
         # Create a new thread to handle the client
-        client_thread = threading.Thread(target=echo_server, args=(client_socket, client_address))
+        client_thread = threading.Thread(target=echo_server, args=(client_socket, client_address, username))
         client_thread.start()
 
 # Main function
@@ -48,6 +71,7 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
 
 
