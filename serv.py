@@ -28,8 +28,11 @@ def handle_client(client_socket, client_address):
             
             # Broadcast message to all clients
             for user_socket in message_history:
-                if user_socket != client_socket:
-                    user_socket.sendall(message.encode())
+                try:
+                    if user_socket != client_socket:
+                        user_socket.sendall(message.encode())
+                except Exception as e:
+                    print(f"Error broadcasting message to client {user_socket}: {e}")
     except Exception as e:
         print(f"Error handling client {client_address}: {e}")
     
